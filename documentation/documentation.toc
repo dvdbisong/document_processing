@@ -21,3 +21,12 @@
 \contentsline {subsection}{\numberline {2.4.3}Economic Impact Analysis}{6}{subsection.2.4.3}%
 \contentsline {subsection}{\numberline {2.4.4}Integration with System Architecture}{7}{subsection.2.4.4}%
 \contentsline {subsection}{\numberline {2.4.5}Performance Considerations}{7}{subsection.2.4.5}%
+\contentsline {section}{\numberline {2.5}Event-Driven Processing with Cloud Pub/Sub}{7}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Integration of Cloud Storage, Pub/Sub, and Cloud Run}{7}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Advantages of This Approach}{8}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Implementation Details}{8}{subsection.2.5.3}%
+\contentsline {subsubsection}{Cloud Storage Configuration}{8}{section*.2}%
+\contentsline {subsubsection}{Pub/Sub Topic and Subscription}{8}{section*.3}%
+\contentsline {subsubsection}{Cloud Run Service}{8}{section*.4}%
+\contentsline {subsection}{\numberline {2.5.4}Error Handling and Retry Mechanism}{9}{subsection.2.5.4}%
+\contentsline {subsection}{\numberline {2.5.5}Monitoring and Logging}{9}{subsection.2.5.5}%
