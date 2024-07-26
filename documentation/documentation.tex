@@ -149,7 +149,55 @@ In our system, Google Secret Manager is utilized to securely store and manage a 
 The application architecture is designed to retrieve these secrets at runtime, adhering to the principle of dynamic secret management. This approach ensures that sensitive data is never hard-coded or stored in configuration files, significantly reducing the risk of inadvertent exposure through code repositories or configuration management systems.
 
 
+\section{Serverless Deployment with Google Cloud Run}
 
+In the pursuit of an optimal balance between performance, scalability, and cost-effectiveness, our system leverages Google Cloud Run for serverless deployment. This choice is pivotal in achieving a highly responsive yet economically efficient architecture.
+
+\subsection{Scalability and Performance}
+Cloud Run, a fully managed serverless platform, offers several key advantages:
+
+\begin{itemize}
+    \item \textbf{Automatic Scaling:} Cloud Run dynamically adjusts the number of container instances based on incoming traffic, ensuring optimal resource utilization.
+    \item \textbf{Rapid Response:} The platform can quickly spin up new instances to handle sudden spikes in demand, maintaining low latency even under variable load conditions.
+    \item \textbf{Stateless Architecture:} By design, Cloud Run encourages stateless applications, promoting better scalability and easier management of distributed systems.
+\end{itemize}
+
+\subsection{Scale-to-Zero Capability}
+A distinguishing feature of Cloud Run is its ability to scale the number of running instances to zero when the service is not in use. This capability brings several benefits:
+
+\begin{enumerate}
+    \item \textbf{Cost Optimization:} When there are no incoming requests, the service scales down to zero instances, effectively eliminating idle resource costs.
+    \item \textbf{Resource Efficiency:} Computing resources are allocated only when needed, aligning perfectly with the principles of efficient resource management in cloud environments.
+    \item \textbf{Environmental Consideration:} By minimizing unnecessary compute usage, the scale-to-zero approach contributes to reduced energy consumption, aligning with sustainable computing practices.
+\end{enumerate}
+
+\subsection{Economic Impact Analysis}
+The implementation of Cloud Run with its scale-to-zero capability presents significant economic advantages:
+
+\begin{itemize}
+    \item \textbf{Pay-per-Use Model:} Costs are incurred only for the actual compute time used to process requests, not for idle time. This model is particularly beneficial for services with variable or unpredictable traffic patterns.
+    \item \textbf{Reduction in Operational Overhead:} The serverless nature of Cloud Run eliminates the need for server provisioning, capacity planning, and maintenance, reducing operational costs and complexity.
+    \item \textbf{Optimized Resource Allocation:} By automatically adjusting resources based on demand, the system avoids over-provisioning, a common cause of inflated cloud expenses.
+\end{itemize}
+
+\subsection{Integration with System Architecture}
+Cloud Run seamlessly integrates with other components of our system:
+
+\begin{itemize}
+    \item \textbf{Firestore and Pinecone Interaction:} The stateless nature of Cloud Run instances complements the use of Firestore for metadata and Pinecone for vector embeddings, allowing for efficient, scalable data operations.
+    \item \textbf{Secret Management:} Cloud Run's integration with Google Secret Manager ensures secure access to sensitive information, maintaining the system's security posture even in a serverless environment.
+    \item \textbf{Event-Driven Processing:} In conjunction with Google Cloud Pub/Sub, Cloud Run enables efficient event-driven document processing, scaling resources precisely in response to incoming documents.
+\end{itemize}
+
+\subsection{Performance Considerations}
+While the scale-to-zero feature offers significant benefits, it's important to address potential trade-offs:
+
+\begin{itemize}
+    \item \textbf{Cold Start Latency:} When scaling from zero, there can be a slight delay in spinning up new instances. This "cold start" phenomenon is mitigated by Cloud Run's rapid instance initialization, typically completed within seconds.
+    \item \textbf{Warm Instance Retention:} To balance between cost savings and performance, Cloud Run allows configuration of minimum instances, ensuring a baseline of warm instances for immediate request handling.
+\end{itemize}
+
+In conclusion, the integration of Google Cloud Run with its scale-to-zero capability into our system architecture represents a strategic decision that harmonizes performance requirements with cost optimization. This approach not only ensures efficient resource utilization and significant cost savings but also positions the system to handle varying workloads with agility and economic prudence.
 
 
 

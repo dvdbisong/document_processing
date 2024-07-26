@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.3.9)  26 JUL 2024 15:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.3.9)  26 JUL 2024 15:58
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1425,30 +1425,35 @@ Overfull \hbox (8.2729pt too wide) in paragraph at lines 122--122
 []\T1/cmr/bx/n/17.28 Secure Se-cret Man-age-ment with Google Se-cret Man-
  []
 
-[3] [4] [5] (./documentation.aux)
+[3] [4]
+Overfull \hbox (7.9802pt too wide) in paragraph at lines 154--155
+\T1/cmr/m/n/12 In the pur-suit of an op-ti-mal bal-ance be-tween per-for-mance, scal-a-bil-ity, and cost-effectiveness,
+ []
+
+[5] [6] (./documentation.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
 Package rerunfilecheck Info: File `documentation.out' has not changed.
-(rerunfilecheck)             Checksum: 3F75444D507538F35CD950D7F11704A8;1357.
+(rerunfilecheck)             Checksum: C788622958C63D3E9EB824F0E1B9572A;2660.
 Package logreq Info: Writing requests to 'documentation.run.xml'.
 \openout1 = `documentation.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 40461 strings out of 474116
- 798625 string characters out of 5743683
- 1938187 words of memory out of 5000000
- 62153 multiletter control sequences out of 15000+600000
+ 40477 strings out of 474116
+ 798846 string characters out of 5743683
+ 1937187 words of memory out of 5000000
+ 62159 multiletter control sequences out of 15000+600000
  574233 words of font info for 78 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  119i,12n,123p,965b,1814s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfbx1728.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfcc1440.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfrm1440.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfti1440.pfb>
-Output written on documentation.pdf (7 pages, 122971 bytes).
+Output written on documentation.pdf (8 pages, 131481 bytes).
 PDF statistics:
- 136 PDF objects out of 1000 (max. 8388607)
- 108 compressed objects within 2 object streams
- 30 named destinations out of 1000 (max. 500000)
- 53 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 177 PDF objects out of 1000 (max. 8388607)
+ 148 compressed objects within 2 object streams
+ 40 named destinations out of 1000 (max. 500000)
+ 101 words of extra memory for PDF output out of 10000 (max. 10000000)
 

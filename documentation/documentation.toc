@@ -4,3 +4,9 @@
 \contentsline {section}{\numberline {2.1}Storage and Retrieval Strategy for Vector Embeddings and Text Chunks}{2}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Recommended Approach: Hybrid Storage with Firestore and Pinecone}{2}{section.2.2}%
 \contentsline {section}{\numberline {2.3}Secure Secret Management with Google Secret Manager}{4}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Serverless Deployment with Google Cloud Run}{5}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Scalability and Performance}{5}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Scale-to-Zero Capability}{5}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Economic Impact Analysis}{5}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.4}Integration with System Architecture}{6}{subsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.4.5}Performance Considerations}{6}{subsection.2.4.5}%
