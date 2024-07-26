@@ -14,6 +14,7 @@ import base64
 import json
 import fitz  # PyMuPDF
 import traceback
+from google.cloud import pubsub_v1
 
 # Configure logging
 logging.basicConfig(
@@ -29,11 +30,12 @@ storage_client = None
 index = None
 model = None
 project_id = "ebisong-sandbox"
+publisher = None
 
 
 @app.on_event("startup")
 async def startup_event():
-    global db, storage_client, index, model
+    global db, storage_client, index, model, publisher
 
     logger.info("Initializing application...")
 
@@ -42,6 +44,10 @@ async def startup_event():
         db = firestore.Client(project=project_id, database="arteria-db")
         storage_client = storage.Client(project=project_id)
         logger.info("Firestore and Storage clients initialized successfully.")
+
+        # Initialize Pub/Sub publisher
+        publisher = pubsub_v1.PublisherClient()
+        logger.info("Pub/Sub publisher initialized successfully.")
 
         # Function to access secret manager
         def access_secret_version(project_id, secret_id, version_id="latest"):
@@ -99,6 +105,7 @@ async def startup_event():
 
 class PubSubMessage(BaseModel):
     message: dict
+    subscription: str
 
 
 def partition_pdf_with_pymupdf(file_path):
@@ -161,15 +168,33 @@ async def process_document(pubsub_message: PubSubMessage):
 
         # If we've made it this far, processing was successful
         logger.info("Document processed successfully.")
+
+        # Acknowledge the message
+        acknowledge_message(
+            pubsub_message.subscription, pubsub_message.message["ackId"]
+        )
+
         return {"status": "OK"}
 
     except Exception as e:
         logger.error(f"Error processing document: {str(e)}")
         logger.error(traceback.format_exc())
-        # By raising an HTTPException, we ensure the message won't be acknowledged
+        # Don't acknowledge the message if there was an error
         raise HTTPException(
             status_code=500, detail=f"Error processing document: {str(e)}"
         )
+
+
+def acknowledge_message(subscription_path, ack_id):
+    try:
+        subscriber = pubsub_v1.SubscriberClient()
+        subscriber.acknowledge(
+            request={"subscription": subscription_path, "ack_ids": [ack_id]}
+        )
+        logger.info(f"Message acknowledged: {ack_id}")
+    except Exception as e:
+        logger.error(f"Error acknowledging message: {str(e)}")
+        logger.error(traceback.format_exc())
 
 
 def generate_embeddings(text_chunks):

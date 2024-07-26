@@ -2,6 +2,7 @@ fastapi
 google-cloud-storage
 google-cloud-firestore
 google-cloud-secret-manager
+google-cloud-pubsub
 sentence-transformers
 pinecone-client
 numpy
