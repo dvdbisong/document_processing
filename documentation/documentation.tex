@@ -67,6 +67,53 @@
 
 \chapter{Introduction}
 
+\section{Background and Motivation}
+In the rapidly evolving landscape of data-driven applications, the need for efficient, scalable, and cost-effective document processing and retrieval systems has become increasingly critical. Organizations across various sectors are grappling with the challenge of extracting meaningful insights from vast repositories of unstructured data, particularly in the form of PDF documents. This paper presents a novel system design that addresses these challenges, leveraging cutting-edge cloud technologies and machine learning techniques to create a robust, serverless architecture for document processing and intelligent search.
+
+\section{Problem Statement}
+The primary challenge this system aims to address is the efficient extraction, storage, and retrieval of information from large volumes of PDF documents. Traditional approaches often struggle with:
+\begin{itemize}
+    \item Scalability issues when processing large numbers of documents
+    \item High latency in search and retrieval operations
+    \item Inefficient use of computational resources, leading to increased operational costs
+    \item Limited semantic understanding of document contents, resulting in suboptimal search results
+\end{itemize}
+Our system design seeks to overcome these limitations by employing a serverless architecture, advanced natural language processing techniques, and optimized storage solutions.
+
+\section{Objectives}
+The key objectives of this system design are:
+\begin{enumerate}
+    \item To develop a scalable and cost-effective solution for processing and storing large volumes of PDF documents
+    \item To implement an intelligent search functionality that understands the semantic content of documents
+    \item To minimize operational costs through efficient resource utilization and serverless architecture
+    \item To ensure high availability and low latency in document retrieval operations
+    \item To maintain robust security measures for sensitive data and API keys
+\end{enumerate}
+
+\section{Scope and Limitations}
+This paper focuses on the design of a cloud-based system for PDF document processing and retrieval. The scope includes:
+\begin{itemize}
+    \item PDF text extraction and processing
+    \item Generation and storage of text embeddings
+    \item Implementation of vector-based similarity search
+    \item Integration of serverless computing for scalable processing
+    \item Secure management of sensitive information and API keys
+\end{itemize}
+While the system is designed to handle PDF documents, the principles and architecture discussed could be extended to other document formats with appropriate modifications.
+
+\section{Methodology}
+Our approach combines several state-of-the-art technologies and methodologies:
+\begin{itemize}
+    \item Serverless computing using Google Cloud Run for scalable document processing
+    \item Vector embeddings generated using advanced natural language processing models
+    \item Hybrid storage strategy utilizing Google Cloud Firestore and Pinecone vector database
+    \item RESTful API design principles for system interaction
+    \item Secure secret management using Google Cloud Secret Manager
+\end{itemize}
+These components are integrated into a cohesive system that balances performance, cost-effectiveness, and scalability.
+
+Through this comprehensive exploration, we aim to contribute to the field of cloud-based document processing and retrieval systems, offering insights into building efficient, scalable, and cost-effective solutions for managing and extracting value from large document repositories.
+
 \chapter{System Design}
 
 \section{Storage and Retrieval Strategy for Vector Embeddings and Text Chunks}
