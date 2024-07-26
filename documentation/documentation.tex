@@ -72,7 +72,7 @@
 \section{Storage and Retrieval Strategy for Vector Embeddings and Text Chunks}
 In designing a robust system for managing vector embeddings and associated text chunks, it is imperative to strike an optimal balance between latency, cost-effectiveness, and scalability. This section presents a comprehensive analysis of various storage options, culminating in a justified recommendation for the most suitable architecture.
 
-\subsection*{Options for Storage}
+\subsection{Options for Storage}
 \begin{enumerate}
     \item In-Memory Storage:
     \begin{itemize}
@@ -95,7 +95,7 @@ In designing a robust system for managing vector embeddings and associated text 
 
 By using Firestore for metadata and Pinecone for embeddings, the system can quickly retrieve metadata and perform low-latency searches for embeddings. This hybrid approach leverages the cost-effectiveness of Firestore for structured data and the specialized capabilities of Pinecone for vector data. Both Firestore and Pinecone are designed to scale automatically, ensuring the system can handle increasing amounts of data without significant performance degradation. In essence, we'll use Firestore for Metadata and Text Chunks. This will store the text chunks and associated metadata and allow for efficient querying and retrieval of text and metadata. In using Pinecone (or any other vector database) for embeddings we can store the vector embeddings efficiently. And vector databases supports low-latency similarity searches and vector operations.
 
-\subsection*{Firestore for Metadata and Text Chunks}
+\subsection{Firestore for Metadata and Text Chunks}
 \begin{itemize}
     \item \textbf{Real-time Capabilities:} Firestore's real-time database functionality enables swift access to metadata and text chunks, crucial for maintaining system responsiveness.
     \item \textbf{Low-latency Operations:} The database provides exceptionally low-latency read and write operations, particularly beneficial for structured data retrieval.
@@ -103,7 +103,7 @@ By using Firestore for metadata and Pinecone for embeddings, the system can quic
     \item \textbf{Automatic Scalability:} The database is engineered to scale automatically with increasing data volume and read/write operations, eliminating the need for manual scaling interventions.
 \end{itemize}
 
-\subsection*{Pinecone (or any other Vector Database) for Embeddings}
+\subsection{Pinecone (or any other Vector Database) for Embeddings}
 \begin{itemize}
     \item \textbf{Vector Optimization:} Pinecone's architecture is specifically optimized for vector operations, ensuring high efficiency in storing and querying embeddings.
     \item \textbf{Low-latency Similarity Searches:} The database excels in performing low-latency similarity searches, a critical feature for applications relying on rapid embedding retrieval.
@@ -111,7 +111,7 @@ By using Firestore for metadata and Pinecone for embeddings, the system can quic
     \item \textbf{Seamless Scalability:} Pinecone is designed to handle large-scale embedding data, offering seamless scalability as the dataset expands.
 \end{itemize}
 
-\subsection*{Why Not In-Memory Storage?}
+\subsection{Why Not In-Memory Storage?}
 \begin{enumerate}
     \item \textbf{Limited by Memory Capacity:} In-memory storage is not suitable for large-scale data as it is limited by the available memory.
     \item \textbf{Data Volatility:} Data stored in memory is lost if the service is restarted or crashes, which is not ideal for persistent storage requirements.
@@ -122,7 +122,7 @@ By using Firestore for metadata and Pinecone for embeddings, the system can quic
 \section{Secure Secret Management with Google Secret Manager}
 In the architecture of our system, the secure management of sensitive information is paramount. To address this critical requirement, we have integrated Google Secret Manager, a robust and scalable solution for storing and managing confidential data.
 
-\subsection*{Rationale for Adoption}
+\subsection{Rationale for Adoption}
 The implementation of Google Secret Manager in our system design is predicated on several key factors:
 
 \begin{enumerate}
@@ -136,7 +136,7 @@ The implementation of Google Secret Manager in our system design is predicated o
     \item \textbf{Centralized Management:} By providing a unified platform for secret storage, Secret Manager reduces the operational complexity associated with managing secrets across disparate system components. This centralization minimizes the attack surface and simplifies secret rotation and revocation procedures.
 \end{enumerate}
 
-\subsection*{Implementation Strategy}
+\subsection{Implementation Strategy}
 In our system, Google Secret Manager is utilized to securely store and manage a variety of sensitive data, including:
 
 \begin{itemize}

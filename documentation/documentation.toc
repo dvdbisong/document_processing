@@ -2,8 +2,14 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
 \contentsline {chapter}{\numberline {2}System Design}{2}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Storage and Retrieval Strategy for Vector Embeddings and Text Chunks}{2}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Options for Storage}{2}{subsection.2.1.1}%
 \contentsline {section}{\numberline {2.2}Recommended Approach: Hybrid Storage with Firestore and Pinecone}{2}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Firestore for Metadata and Text Chunks}{3}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Pinecone (or any other Vector Database) for Embeddings}{3}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Why Not In-Memory Storage?}{3}{subsection.2.2.3}%
 \contentsline {section}{\numberline {2.3}Secure Secret Management with Google Secret Manager}{4}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Rationale for Adoption}{4}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Implementation Strategy}{4}{subsection.2.3.2}%
 \contentsline {section}{\numberline {2.4}Serverless Deployment with Google Cloud Run}{5}{section.2.4}%
 \contentsline {subsection}{\numberline {2.4.1}Scalability and Performance}{5}{subsection.2.4.1}%
 \contentsline {subsection}{\numberline {2.4.2}Scale-to-Zero Capability}{5}{subsection.2.4.2}%
