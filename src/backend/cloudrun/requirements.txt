@@ -1,0 +1,18 @@
+fastapi
+google-cloud-storage
+google-cloud-firestore
+google-cloud-secret-manager
+sentence-transformers
+pinecone-client
+numpy
+uvicorn
+pydantic
+PyMuPDF
+
+# For reduced version
+# 
+# fastapi
+# google-cloud-storage
+# google-cloud-aiplatform
+# uvicorn
+# pydantic

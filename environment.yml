@@ -1,0 +1,9 @@
+name: arteria-dev
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - google-cloud-workflows
+  - google-cloud-functions
+  - flask

@@ -1,0 +1,16 @@
+google-cloud-storage
+google-cloud-firestore
+google-cloud-secret-manager
+unstructured
+sentence-transformers
+pinecone-client
+numpy
+pdfminer.six
+pillow_heif
+matplotlib
+unstructured_inference
+uvicorn
+pydantic
+unstructured.pytesseract
+PyPDF2
+onnxruntime
