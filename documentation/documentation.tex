@@ -1,0 +1,156 @@
+\documentclass[a4paper, 12pt]{report}
+
+%%%%%%%%%%%%
+% Packages %
+%%%%%%%%%%%%
+
+\usepackage[english]{babel}
+\usepackage[noheader]{packages/sleek}
+\usepackage{packages/sleek-title}
+\usepackage{packages/sleek-theorems}
+\usepackage{packages/sleek-listings}
+\graphicspath{{./resources/img/}}
+
+%%%%%%%%%%%%%%
+% Title-page %
+%%%%%%%%%%%%%%
+
+%\logo{siliconblast}
+%\institute{Random University}
+%\faculty{SiliconBlast Research}
+%\department{Department of Anything but Psychology}
+\title{ArteriaAI: Document Understanding Product}
+%\subtitle{Technical Notes}
+\author{\textit{Author}\\Ekaba \textsc{Bisong}}
+%\supervisor{Linus \textsc{Torvalds}}
+%\context{Well, I was bored...}
+\date{}
+
+%%%%%%%%%%%%%%%%
+% Bibliography %
+%%%%%%%%%%%%%%%%
+
+\addbibresource{./resources/bib/references.bib}
+
+%%%%%%%%%%
+% Others %
+%%%%%%%%%%
+
+\lstdefinestyle{latex}{
+    language=TeX,
+    style=default,
+    %%%%%
+    commentstyle=\ForestGreen,
+    keywordstyle=\TrueBlue,
+    stringstyle=\VeronicaPurple,
+    emphstyle=\TrueBlue,
+    %%%%%
+    emph={LaTeX, usepackage, textit, textbf, textsc}
+}
+
+\FrameTBStyle{latex}
+
+\def\tbs{\textbackslash}
+
+%%%%%%%%%%%%
+% Document %
+%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+\romantableofcontents
+
+
+%%%%%%%%%%%%%%%%%%%%%
+% Introduction
+%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Introduction}
+
+\chapter{System Design}
+
+\section{Storage and Retrieval Strategy for Vector Embeddings and Text Chunks}
+In designing a robust system for managing vector embeddings and associated text chunks, it is imperative to strike an optimal balance between latency, cost-effectiveness, and scalability. This section presents a comprehensive analysis of various storage options, culminating in a justified recommendation for the most suitable architecture.
+
+\subsection*{Options for Storage}
+\begin{enumerate}
+    \item In-Memory Storage:
+    \begin{itemize}
+        \item Pros: Extremely fast access, low latency.
+        \item Cons: Limited by memory capacity, not suitable for large-scale data, data is lost on restart.
+    \end{itemize}
+    \item File Storage (e.g., Cloud Storage):
+    \begin{itemize}
+        \item Pros: Cost-effective, easy to implement, scalable.
+        \item Cons: Higher latency for read/write operations, limited querying capabilities.
+    \end{itemize}
+    \item Database Storage (e.g., Firestore, Bigtable, or a Vector Database like Pinecone):
+    \begin{itemize}
+        \item Pros: Scalable, provides efficient querying and indexing, good for structured data, supports complex queries.
+        \item Cons: Higher cost, moderate latency compared to in-memory storage.
+    \end{itemize}
+\end{enumerate}
+
+\section{Recommended Approach: Hybrid Storage with Firestore and Pinecone}
+
+By using Firestore for metadata and Pinecone for embeddings, the system can quickly retrieve metadata and perform low-latency searches for embeddings. This hybrid approach leverages the cost-effectiveness of Firestore for structured data and the specialized capabilities of Pinecone for vector data. Both Firestore and Pinecone are designed to scale automatically, ensuring the system can handle increasing amounts of data without significant performance degradation. In essence, we'll use Firestore for Metadata and Text Chunks. This will store the text chunks and associated metadata and allow for efficient querying and retrieval of text and metadata. In using Pinecone (or any other vector database) for embeddings we can store the vector embeddings efficiently. And vector databases supports low-latency similarity searches and vector operations.
+
+\subsection*{Firestore for Metadata and Text Chunks}
+\begin{itemize}
+    \item \textbf{Real-time Capabilities:} Firestore's real-time database functionality enables swift access to metadata and text chunks, crucial for maintaining system responsiveness.
+    \item \textbf{Low-latency Operations:} The database provides exceptionally low-latency read and write operations, particularly beneficial for structured data retrieval.
+    \item \textbf{Cost-effective Scaling:} Firestore's pay-as-you-go pricing model ensures cost-effectiveness, especially for variable workloads, aligning well with dynamic system requirements.
+    \item \textbf{Automatic Scalability:} The database is engineered to scale automatically with increasing data volume and read/write operations, eliminating the need for manual scaling interventions.
+\end{itemize}
+
+\subsection*{Pinecone (or any other Vector Database) for Embeddings}
+\begin{itemize}
+    \item \textbf{Vector Optimization:} Pinecone's architecture is specifically optimized for vector operations, ensuring high efficiency in storing and querying embeddings.
+    \item \textbf{Low-latency Similarity Searches:} The database excels in performing low-latency similarity searches, a critical feature for applications relying on rapid embedding retrieval.
+    \item \textbf{Performance-Cost Balance:} While potentially incurring higher costs than general-purpose databases, Pinecone's performance benefits for vector data often justify the investment.
+    \item \textbf{Seamless Scalability:} Pinecone is designed to handle large-scale embedding data, offering seamless scalability as the dataset expands.
+\end{itemize}
+
+\subsection*{Why Not In-Memory Storage?}
+\begin{enumerate}
+    \item \textbf{Limited by Memory Capacity:} In-memory storage is not suitable for large-scale data as it is limited by the available memory.
+    \item \textbf{Data Volatility:} Data stored in memory is lost if the service is restarted or crashes, which is not ideal for persistent storage requirements.
+    \item \textbf{Scalability:} Managing large volumes of data in memory becomes impractical and expensive as the dataset grows.
+\end{enumerate}
+
+
+\section{Secure Secret Management with Google Secret Manager}
+In the architecture of our system, the secure management of sensitive information is paramount. To address this critical requirement, we have integrated Google Secret Manager, a robust and scalable solution for storing and managing confidential data.
+
+\subsection*{Rationale for Adoption}
+The implementation of Google Secret Manager in our system design is predicated on several key factors:
+
+\begin{enumerate}
+    \item \textbf{Enhanced Security Posture:} Google Secret Manager employs state-of-the-art encryption protocols for data at rest and in transit, leveraging Google's advanced security infrastructure. This significantly mitigates the risk of unauthorized access to sensitive information.
+    \item \textbf{Granular Access Control:} The solution integrates seamlessly with Google Cloud Identity and Access Management (IAM), enabling fine-grained control over secret access. This allows for the implementation of the principle of least privilege, ensuring that entities within the system have access only to the secrets they require for their specific functions.
+
+    \item \textbf{Version Control and Auditing:} The versioning capability of Secret Manager facilitates the management of secret lifecycles, allowing for easy rollbacks and historical tracking. Coupled with comprehensive auditing features, this provides a clear trail of secret access and modifications, enhancing our system's compliance with security best practices.
+
+    \item \textbf{Seamless Integration:} Given our system's reliance on Google Cloud Platform services such as Firestore, Secret Manager offers native integration, streamlining the process of secret retrieval and management across our application ecosystem.
+
+    \item \textbf{Centralized Management:} By providing a unified platform for secret storage, Secret Manager reduces the operational complexity associated with managing secrets across disparate system components. This centralization minimizes the attack surface and simplifies secret rotation and revocation procedures.
+\end{enumerate}
+
+\subsection*{Implementation Strategy}
+In our system, Google Secret Manager is utilized to securely store and manage a variety of sensitive data, including:
+
+\begin{itemize}
+    \item API authentication tokens for external services (e.g., Pinecone API keys)
+    \item Database connection strings and credentials (e.g., Firestore access parameters)
+    \item Encryption keys used for data protection within the application
+    \item Environment-specific configuration data containing sensitive information
+\end{itemize}
+
+The application architecture is designed to retrieve these secrets at runtime, adhering to the principle of dynamic secret management. This approach ensures that sensitive data is never hard-coded or stored in configuration files, significantly reducing the risk of inadvertent exposure through code repositories or configuration management systems.
+
+
+
+
+
+
+\end{document}

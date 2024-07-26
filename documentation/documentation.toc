@@ -1,0 +1,6 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {chapter}{\numberline {2}System Design}{2}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Storage and Retrieval Strategy for Vector Embeddings and Text Chunks}{2}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Recommended Approach: Hybrid Storage with Firestore and Pinecone}{2}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Secure Secret Management with Google Secret Manager}{4}{section.2.3}%
