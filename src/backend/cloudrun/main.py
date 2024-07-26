@@ -28,7 +28,7 @@ db = None
 storage_client = None
 index = None
 model = None
-project_id = "ebisong-sandbox"  # Make sure this is your correct project ID
+project_id = "ebisong-sandbox"
 
 
 @app.on_event("startup")
