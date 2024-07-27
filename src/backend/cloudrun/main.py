@@ -213,9 +213,10 @@ def store_embeddings(text_chunks, embeddings):
     logger.info(f"Storing {len(embeddings)} embeddings...")
     try:
         for i, (text_chunk, embedding) in enumerate(zip(text_chunks, embeddings)):
-            doc_ref = db.collection("document_embeddings").document(f"doc_{i}")
+            doc_id = f"doc_{i}"
+            doc_ref = db.collection("document_embeddings").document(doc_id)
             doc_ref.set({"text_chunk": text_chunk, "embedding_id": f"embedding_{i}"})
-            logger.info(f"Stored document {i} in Firestore (arteria-db).")
+            logger.info(f"Stored document {doc_id} in Firestore (arteria-db).")
 
             index.upsert(
                 vectors=[{"id": f"embedding_{i}", "values": embedding.tolist()}]
@@ -233,7 +234,7 @@ class SearchQuery(BaseModel):
 
 @app.post("/search")
 async def search(search_query: SearchQuery):
-    logger.info("Received search request.")
+    logger.info(f"Received search request with query: '{search_query.query}'")
     query = search_query.query
 
     if not query:
@@ -250,26 +251,25 @@ async def search(search_query: SearchQuery):
         logger.info(f"Received {len(results['matches'])} matches from Pinecone.")
 
         matches = []
-        for match in results["matches"]:
-            logger.info(
-                f"Fetching document {match['id']} from Firestore (arteria-db)..."
-            )
-            doc_ref = db.collection("document_embeddings").document(match["id"])
+        for i, match in enumerate(results["matches"]):
+            doc_id = f"doc_{i}"  # This should match how you're storing documents
+            logger.info(f"Fetching document {doc_id} from Firestore (arteria-db)...")
+            doc_ref = db.collection("document_embeddings").document(doc_id)
             doc = doc_ref.get()
             if doc.exists:
                 matches.append(
                     {
-                        "id": match["id"],
+                        "id": doc_id,
                         "score": match["score"],
                         "text_chunk": doc.to_dict()["text_chunk"],
                     }
                 )
-                logger.info(f"Added match {match['id']} to results.")
+                logger.info(f"Added match {doc_id} to results.")
             else:
-                logger.warning(f"Document {match['id']} not found in Firestore.")
+                logger.warning(f"Document {doc_id} not found in Firestore.")
 
         logger.info(f"Returning {len(matches)} search results.")
-        return {"results": matches[:5]}
+        return {"results": matches}
 
     except Exception as e:
         logger.error(f"Error during search: {str(e)}")

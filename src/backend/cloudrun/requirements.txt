@@ -9,11 +9,3 @@ numpy
 uvicorn
 pydantic
 PyMuPDF
-
-# For reduced version
-# 
-# fastapi
-# google-cloud-storage
-# google-cloud-aiplatform
-# uvicorn
-# pydantic

@@ -1,3 +1,5 @@
+// components/Results.js
+
 const Results = ({ results }) => {
     return (
         <div className="mt-8">

@@ -1,3 +1,5 @@
+// components/SearchBar.js
+
 import { useState } from 'react';
 
 const SearchBar = ({ onSearch }) => {
