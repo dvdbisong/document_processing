@@ -26,13 +26,13 @@ export default async function handler(req, res) {
         const endTime = Date.now();
         logger.info(`Backend request completed in ${endTime - startTime}ms`);
 
+        const data = await response.json();
+
         if (!response.ok) {
-            const errorText = await response.text();
-            logger.error(`Backend request failed with status ${response.status}: ${errorText}`);
-            throw new Error(`Failed to fetch from backend: ${response.status} ${response.statusText}`);
+            logger.error(`Backend request failed with status ${response.status}: ${JSON.stringify(data)}`);
+            return res.status(response.status).json({ error: data.detail || 'An error occurred while searching' });
         }
 
-        const data = await response.json();
         logger.info(`Received successful response from backend with ${data.results ? data.results.length : 0} results`);
 
         res.status(200).json(data);

@@ -9,16 +9,20 @@ const SearchBar = ({ onSearch }) => {
 
     const handleSearch = async (e) => {
         e.preventDefault();
+        if (!query.trim()) {
+            setError('Please enter a search query');
+            return;
+        }
         setIsLoading(true);
         setError('');
 
         try {
             const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
-            if (!response.ok) {
-                throw new Error('Search failed. Please try again.');
-            }
             const data = await response.json();
-            onSearch(data.results);
+            if (!response.ok) {
+                throw new Error(data.error || 'Search failed. Please try again.');
+            }
+            onSearch(data.results || []);
         } catch (error) {
             console.error('Search error:', error);
             setError(error.message || 'An error occurred while searching. Please try again.');
