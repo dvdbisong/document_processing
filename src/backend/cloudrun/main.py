@@ -2,7 +2,7 @@
 
 import os
 import logging
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from google.cloud import storage
 from google.cloud import firestore
 from google.cloud import secretmanager
@@ -15,6 +15,7 @@ import json
 import fitz  # PyMuPDF
 import traceback
 from google.cloud import pubsub_v1
+import hashlib
 
 # Configure logging
 logging.basicConfig(
@@ -127,22 +128,34 @@ def partition_pdf_with_pymupdf(file_path):
         return []
 
 
+def file_exists_in_firestore(file_name):
+    doc_ref = db.collection("processed_files").document(file_name)
+    return doc_ref.get().exists
+
+
+def generate_embedding_id(file_name, chunk_index):
+    hash_input = f"{file_name}_{chunk_index}"
+    return hashlib.md5(hash_input.encode()).hexdigest()
+
+
 @app.post("/")
 async def process_document(pubsub_message: PubSubMessage):
-    logger.info("Received request to process document.")
+    logger.info(f"Received Pub/Sub message: {pubsub_message.dict()}")
 
     try:
         if not pubsub_message.message or "data" not in pubsub_message.message:
             logger.error("Invalid Pub/Sub message format: missing data.")
-            raise HTTPException(
-                status_code=400, detail="Invalid Pub/Sub message format"
-            )
+            return Response(status_code=400, content="Invalid Pub/Sub message format")
 
         data = json.loads(base64.b64decode(pubsub_message.message["data"]).decode())
 
         bucket_name = data["bucket"]
         file_name = data["name"]
         logger.info(f"Processing document: {file_name} from bucket: {bucket_name}")
+
+        if file_exists_in_firestore(file_name):
+            logger.info(f"File {file_name} already processed. Skipping.")
+            return Response(status_code=200, content="File already processed")
 
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(file_name)
@@ -156,45 +169,30 @@ async def process_document(pubsub_message: PubSubMessage):
 
         if not text_chunks:
             logger.error("Failed to extract text from PDF.")
-            return {"status": "Error", "message": "Failed to extract text from PDF"}
+            return Response(status_code=200, content="Failed to extract text from PDF")
 
         logger.info("Generating embeddings...")
         embeddings = generate_embeddings(text_chunks)
         logger.info(f"Generated {len(embeddings)} embeddings.")
 
         logger.info("Storing embeddings in Firestore and Pinecone...")
-        store_embeddings(text_chunks, embeddings)
+        store_embeddings(file_name, text_chunks, embeddings)
         logger.info("Embeddings stored successfully.")
+
+        # Mark file as processed
+        db.collection("processed_files").document(file_name).set({"processed": True})
 
         # If we've made it this far, processing was successful
         logger.info("Document processed successfully.")
 
-        # Acknowledge the message
-        acknowledge_message(
-            pubsub_message.subscription, pubsub_message.message["ackId"]
-        )
-
-        return {"status": "OK"}
+        # Acknowledge the message with a 200 OK response
+        return Response(status_code=200, content="Document processed successfully")
 
     except Exception as e:
         logger.error(f"Error processing document: {str(e)}")
         logger.error(traceback.format_exc())
-        # Don't acknowledge the message if there was an error
-        raise HTTPException(
-            status_code=500, detail=f"Error processing document: {str(e)}"
-        )
-
-
-def acknowledge_message(subscription_path, ack_id):
-    try:
-        subscriber = pubsub_v1.SubscriberClient()
-        subscriber.acknowledge(
-            request={"subscription": subscription_path, "ack_ids": [ack_id]}
-        )
-        logger.info(f"Message acknowledged: {ack_id}")
-    except Exception as e:
-        logger.error(f"Error acknowledging message: {str(e)}")
-        logger.error(traceback.format_exc())
+        # Return a 200 status code even for errors to prevent retries
+        return Response(status_code=200, content=f"Error processing document: {str(e)}")
 
 
 def generate_embeddings(text_chunks):
@@ -209,19 +207,23 @@ def generate_embeddings(text_chunks):
         raise
 
 
-def store_embeddings(text_chunks, embeddings):
+def store_embeddings(file_name, text_chunks, embeddings):
     logger.info(f"Storing {len(embeddings)} embeddings...")
     try:
         for i, (text_chunk, embedding) in enumerate(zip(text_chunks, embeddings)):
-            doc_id = f"doc_{i}"
-            doc_ref = db.collection("document_embeddings").document(doc_id)
-            doc_ref.set({"text_chunk": text_chunk, "embedding_id": f"embedding_{i}"})
-            logger.info(f"Stored document {doc_id} in Firestore (arteria-db).")
-
-            index.upsert(
-                vectors=[{"id": f"embedding_{i}", "values": embedding.tolist()}]
+            embedding_id = generate_embedding_id(file_name, i)
+            doc_ref = db.collection("document_embeddings").document(embedding_id)
+            doc_ref.set(
+                {
+                    "text_chunk": text_chunk,
+                    "embedding_id": embedding_id,
+                    "file_name": file_name,
+                }
             )
-            logger.info(f"Stored embedding {i} in Pinecone.")
+            logger.info(f"Stored document {embedding_id} in Firestore (arteria-db).")
+
+            index.upsert(vectors=[{"id": embedding_id, "values": embedding.tolist()}])
+            logger.info(f"Stored embedding {embedding_id} in Pinecone.")
     except Exception as e:
         logger.error(f"Error storing embeddings: {str(e)}")
         logger.error(traceback.format_exc())
@@ -251,17 +253,19 @@ async def search(search_query: SearchQuery):
         logger.info(f"Received {len(results['matches'])} matches from Pinecone.")
 
         matches = []
-        for i, match in enumerate(results["matches"]):
-            doc_id = f"doc_{i}"  # This should match how you're storing documents
+        for match in results["matches"]:
+            doc_id = match["id"]  # Use the ID returned by Pinecone
             logger.info(f"Fetching document {doc_id} from Firestore (arteria-db)...")
             doc_ref = db.collection("document_embeddings").document(doc_id)
             doc = doc_ref.get()
             if doc.exists:
+                doc_data = doc.to_dict()
                 matches.append(
                     {
                         "id": doc_id,
                         "score": match["score"],
-                        "text_chunk": doc.to_dict()["text_chunk"],
+                        "text_chunk": doc_data["text_chunk"],
+                        "file_name": doc_data["file_name"],
                     }
                 )
                 logger.info(f"Added match {doc_id} to results.")
@@ -282,6 +286,11 @@ async def log_request(request: Request):
     body = await request.body()
     logger.info(f"Received request: {body}")
     return {"status": "OK"}
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 
 if __name__ == "__main__":

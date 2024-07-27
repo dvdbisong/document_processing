@@ -14,7 +14,7 @@ gcloud run deploy pdf-processor \
 --region us-central1 \
 --memory 2Gi \
 --cpu 1 \
---timeout 3600 \
+--timeout 540 \
 --concurrency 80 \
 --max-instances 10 \
 --allow-unauthenticated \
@@ -22,6 +22,3 @@ gcloud run deploy pdf-processor \
 --service-account pdf-processor-sa@ebisong-sandbox.iam.gserviceaccount.com
 
 echo "Cloud Run deployment complete."
-
-# Change back to the original directory
-# cd ../../..
