@@ -12,16 +12,6 @@ The document processing and search engine is built with FastAPI, Google Cloud se
 - ☁️ Seamless integration with Google Cloud Storage, Google Cloud Run, Google Pub/Sub and Firestore
 - 🔐 Secure secret management with Google Cloud Secret Manager
 
-## Architecture
-
-```mermaid
-graph LR
-    A[Cloud Storage] --> B[Cloud Run]
-    B --> C[Firestore]
-    B --> D[Pinecone]
-    E[User] --> F[Search API]
-    F --> B
-```
 
 ## Quick Start
 
@@ -55,7 +45,14 @@ make build_frontend
 - Sentence Transformers
 - PyMuPDF
 
-## Components Deep Dive
+## System Architecture
+
+Our document processing and search engine system is built on a robust, scalable architecture leveraging various Google Cloud services and other technologies. Here's an overview of our system architecture:
+
+![System Architecture](documentation/resources/img/high-level-architecture.png)
+
+*Figure 1: High-level system architecture*
+
 
 ### Google Cloud Run
 Cloud Run is a fully managed serverless platform that automatically scales your stateless containers. A key advantage is its ability to scale to zero when not in use, significantly reducing costs in production environments. When there are no incoming requests, Cloud Run scales down to zero instances, meaning you're not paying for idle resources. As soon as a request comes in, it quickly spins up a container to handle it, usually within seconds.
@@ -83,6 +80,23 @@ A Python framework for state-of-the-art sentence, text and image embeddings. In 
 
 ### PyMuPDF
 A high-performance PDF library used for extracting text from PDF documents. It provides robust capabilities for handling various PDF formats and structures.
+
+
+## Frontend User Interface
+
+Our document search system features a user-friendly frontend interface built with Next.js. The frontend allows users to input queries and displays search results efficiently.
+
+![Frontend Architecture](documentation/resources/img/frontend-1.png)
+
+*Figure 2: Frontend interface of the document search system*
+
+Key features of the frontend:
+- Search bar supporting multiple languages
+- Prominent search button for query submission
+- Display of top 5 results with relevance scores
+- Clean, intuitive design for easy navigation
+
+The frontend interacts with a sophisticated backend system that processes queries and retrieves relevant document snippets, leveraging advanced natural language processing techniques to understand and match user intent with document content.
 
 ## Cost Efficiency
 
