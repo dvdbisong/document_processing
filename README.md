@@ -53,6 +53,7 @@ Our document processing and search engine system is built on a robust, scalable 
 
 *Figure 1: High-level system architecture*
 
+For a detailed explanation of our system design, please refer to our [System Design Document (PDF)](documentation/documentation.pdf).
 
 ### Google Cloud Run
 Cloud Run is a fully managed serverless platform that automatically scales your stateless containers. A key advantage is its ability to scale to zero when not in use, significantly reducing costs in production environments. When there are no incoming requests, Cloud Run scales down to zero instances, meaning you're not paying for idle resources. As soon as a request comes in, it quickly spins up a container to handle it, usually within seconds.
