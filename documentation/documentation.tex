@@ -9,6 +9,8 @@
 \usepackage{packages/sleek-title}
 \usepackage{packages/sleek-theorems}
 \usepackage{packages/sleek-listings}
+\usepackage{graphicx}
+\usepackage{svg}
 \graphicspath{{./resources/img/}}
 
 %%%%%%%%%%%%%%
@@ -113,6 +115,18 @@ Our approach combines several state-of-the-art technologies and methodologies:
 These components are integrated into a cohesive system that balances performance, cost-effectiveness, and scalability.
 
 Through this comprehensive exploration, we aim to contribute to the field of cloud-based document processing and retrieval systems, offering insights into building efficient, scalable, and cost-effective solutions for managing and extracting value from large document repositories.
+
+\clearpage
+\section{High-level Design Architecture}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth,angle=90]{high-level-architecture.png}
+    \caption{High-level architecture diagram}
+    \label{fig:high-level-architecture}
+\end{figure}
+
+
 
 \chapter{System Design}
 
@@ -320,6 +334,360 @@ To maintain system health and facilitate troubleshooting:
 
 This event-driven architecture, powered by Cloud Pub/Sub, ensures that our system can efficiently handle document uploads at scale, while maintaining the cost-effectiveness and flexibility offered by serverless computing. It seamlessly integrates with our existing Cloud Run infrastructure, reinforcing the system's capability to process documents with high throughput and low latency.
 
+\chapter{Cost Evaluation}
+
+This chapter presents a comprehensive cost analysis of our proposed system design, comparing it with alternative architectures and similar cloud options. We provide detailed calculations for short-term, medium-term, and long-term usage scenarios, and contrast our solution with alternatives on AWS and Azure.
+
+\section{Cost Advantage of the Proposed System Design}
+
+Our system leverages Google Cloud Run, Cloud Storage, Firestore, Pub/Sub, Secret Manager, and Pinecone. Let's break down the costs for each component and analyze the total cost for different usage volumes over time.
+
+\subsection{Short-term Costs (0-6 months)}
+
+Assuming a startup scenario processing 10,000 documents per month, each averaging 5MB in size:
+
+\begin{itemize}
+    \item \textbf{Cloud Run:} 
+        \begin{itemize}
+            \item CPU: 0.5 vCPU * 10 seconds per document * 10,000 documents = 50,000 vCPU-seconds
+            \item Memory: 1 GB * 10 seconds per document * 10,000 documents = 10,000 GB-seconds
+            \item Cost: (50,000 * \$0.00002400) + (10,000 * \$0.00000250) = \$1.225 per month
+        \end{itemize}
+    \item \textbf{Cloud Storage:} 
+        \begin{itemize}
+            \item Storage: 10,000 * 5MB = 50GB * \$0.020 per GB = \$1.00 per month
+            \item Operations: 10,000 * \$0.005 per 1000 operations = \$0.05 per month
+        \end{itemize}
+    \item \textbf{Firestore:} 
+        \begin{itemize}
+            \item Storage: 50GB * \$0.18 per GB = \$9.00 per month
+            \item Document writes: 10,000 * \$0.18 per 100,000 = \$0.18 per month
+            \item Document reads: 30,000 (assuming 3 reads per document) * \$0.06 per 100,000 = \$0.018 per month
+        \end{itemize}
+    \item \textbf{Pub/Sub:} 
+        \begin{itemize}
+            \item 10,000 messages * 5KB per message = 50MB
+            \item Cost: 50MB * \$40 per TiB = \$0.002 per month
+        \end{itemize}
+    \item \textbf{Secret Manager:} 
+        \begin{itemize}
+            \item 5 active secrets * \$0.06 per version = \$0.30 per month
+            \item 10,000 access operations * \$0.03 per 10,000 = \$0.03 per month
+        \end{itemize}
+    \item \textbf{Pinecone:} 
+        \begin{itemize}
+            \item Storage: 50GB * \$0.00045 per GB/hour * 720 hours = \$16.20 per month
+            \item Write operations: 10,000 * \$2.00 per 1M = \$0.02 per month
+            \item Read operations: 30,000 * \$8.25 per 1M = \$0.2475 per month
+        \end{itemize}
+\end{itemize}
+
+Total estimated monthly cost: \$28.27
+
+\subsection{Medium-term Costs (6-18 months)}
+
+Assuming growth to 100,000 documents per month:
+
+\begin{itemize}
+    \item \textbf{Cloud Run:} (500,000 vCPU-seconds, 100,000 GB-seconds) = \$12.25 per month
+    \item \textbf{Cloud Storage:} (500GB storage, 100,000 operations) = \$10.50 per month
+    \item \textbf{Firestore:} (500GB storage, 100,000 writes, 300,000 reads) = \$91.80 per month
+    \item \textbf{Pub/Sub:} (500MB messages) = \$0.02 per month
+    \item \textbf{Secret Manager:} (10 active secrets, 100,000 access operations) = \$0.90 per month
+    \item \textbf{Pinecone:} (500GB storage, 100,000 writes, 300,000 reads) = \$164.68 per month
+\end{itemize}
+
+Total estimated monthly cost: \$280.15
+
+\subsection{Long-term Costs (18+ months)}
+
+Assuming further growth to 1,000,000 documents per month:
+
+\begin{itemize}
+    \item \textbf{Cloud Run:} (5,000,000 vCPU-seconds, 1,000,000 GB-seconds) = \$122.50 per month
+    \item \textbf{Cloud Storage:} (5TB storage, 1,000,000 operations) = \$105.00 per month
+    \item \textbf{Firestore:} (5TB storage, 1,000,000 writes, 3,000,000 reads) = \$918.00 per month
+    \item \textbf{Pub/Sub:} (5GB messages) = \$0.20 per month
+    \item \textbf{Secret Manager:} (20 active secrets, 1,000,000 access operations) = \$4.20 per month
+    \item \textbf{Pinecone:} (5TB storage, 1,000,000 writes, 3,000,000 reads) = \$1,646.80 per month
+\end{itemize}
+
+Total estimated monthly cost: \$2,796.70
+
+\section{Comparison with Alternative Architectures}
+
+\subsection{Traditional VM-based Architecture}
+
+Assuming similar workload on Google Compute Engine:
+
+\begin{itemize}
+    \item \textbf{Compute:} 2 n1-standard-2 instances (2 vCPU, 7.5GB memory) running 24/7
+        \begin{itemize}
+            \item Cost: 2 * \$48.544 per month = \$97.09 per month
+        \end{itemize}
+    \item \textbf{Storage:} Same as our proposed architecture
+    \item \textbf{Database:} Cloud SQL instead of Firestore
+        \begin{itemize}
+            \item db-n1-standard-1 instance: \$45.48 per month
+            \item 5TB storage: 5000 * \$0.17 per GB = \$850 per month
+        \end{itemize}
+    \item \textbf{Load Balancer:} \$18.26 per month
+\end{itemize}
+
+Total estimated monthly cost for long-term scenario: \$2,767.63
+
+While slightly cheaper, this architecture lacks the automatic scaling and serverless benefits of our proposed design.
+
+\subsection{Containerized Architecture (Google Kubernetes Engine)}
+
+\begin{itemize}
+    \item \textbf{GKE Cluster:} 3 e2-standard-2 nodes
+        \begin{itemize}
+            \item Cost: 3 * \$48.54 per month = \$145.62 per month
+        \end{itemize}
+    \item \textbf{Storage and Database:} Same as our proposed architecture
+    \item \textbf{Container Registry:} \$5 per month (estimated)
+\end{itemize}
+
+Total estimated monthly cost for long-term scenario: \$2,825.62
+
+This architecture provides more control but requires more management overhead and doesn't scale to zero like Cloud Run.
+
+\subsection{Vertex AI Custom Deployment}
+
+Based on the Vertex AI pricing document, let's consider a custom model deployment for our long-term scenario (1,000,000 documents/month):
+
+\begin{itemize}
+    \item \textbf{Compute:} n1-standard-4 (4 vCPU, 15GB memory)
+        \begin{itemize}
+            \item Cost: \$0.2088 per hour * 24 * 30 = \$150.34 per month
+        \end{itemize}
+    \item \textbf{Prediction costs:} Assuming 1,000,000 predictions per month
+        \begin{itemize}
+            \item Cost: 1,000,000 * \$0.0056 per 1000 predictions = \$5,600 per month
+        \end{itemize}
+    \item \textbf{Storage:} 5TB at \$0.020 per GB
+        \begin{itemize}
+            \item Cost: 5000 * \$0.020 = \$100 per month
+        \end{itemize}
+    \item \textbf{Training:} Assuming we retrain the model once a month using n1-standard-8 for 24 hours
+        \begin{itemize}
+            \item Cost: \$0.4176 per hour * 24 = \$10.02 per month
+        \end{itemize}
+\end{itemize}
+
+Total estimated monthly cost: \$5,860.36
+
+This is significantly more expensive than our proposed architecture for the long-term scenario. The bulk of the cost comes from the prediction charges, which scale linearly with the number of documents processed.
+
+While Vertex AI offers advanced machine learning capabilities, it comes at a significantly higher cost for our use case. The prediction costs alone make it much more expensive than our proposed serverless architecture. This demonstrates that while Vertex AI is powerful for complex ML tasks, it may not be cost-effective for more straightforward document processing workflows that don't require its advanced features.
+
+Our proposed architecture, leveraging Cloud Run, Firestore, and Cloud Storage, provides a more cost-effective solution for our specific document processing needs, especially at scale. It offers a balance of performance and cost-efficiency that's well-suited to our use case.
+
+\section{Comparison with AWS and Azure}
+
+\subsection{AWS Equivalent Architecture}
+
+\subsubsection{Short-term (0-6 months, 10,000 documents/month)}
+
+\begin{itemize}
+    \item \textbf{AWS Lambda:} 
+        \begin{itemize}
+            \item 10,000 executions * 10 seconds * 1GB = 100,000 GB-seconds
+            \item Cost: 100,000 * \$0.0000166667 = \$1.67 per month
+            \item 10,000 requests * \$0.20 per 1M requests = \$0.002 per month
+        \end{itemize}
+    \item \textbf{S3:} 
+        \begin{itemize}
+            \item 50GB storage: 50 * \$0.023 per GB = \$1.15 per month
+            \item 10,000 PUT requests * \$0.005 per 1,000 = \$0.05 per month
+            \item 30,000 GET requests * \$0.0004 per 1,000 = \$0.012 per month
+        \end{itemize}
+    \item \textbf{DynamoDB:} 
+        \begin{itemize}
+            \item 50GB storage: 50 * \$0.25 per GB = \$12.50 per month
+            \item 10,000 write request units * \$1.25 per million = \$0.0125 per month
+            \item 30,000 read request units * \$0.25 per million = \$0.0075 per month
+        \end{itemize}
+    \item \textbf{SNS:} 
+        \begin{itemize}
+            \item 10,000 requests * \$0.50 per million = \$0.005 per month
+        \end{itemize}
+    \item \textbf{Secrets Manager:} 
+        \begin{itemize}
+            \item 5 secrets * \$0.40 per secret = \$2.00 per month
+            \item 10,000 API calls * \$0.05 per 10,000 = \$0.05 per month
+        \end{itemize}
+    \item \textbf{Pinecone:} Same as our proposed architecture = \$16.47 per month
+\end{itemize}
+
+Total estimated monthly cost: \$33.93
+
+\subsubsection{Medium-term (6-18 months, 100,000 documents/month)}
+
+\begin{itemize}
+    \item \textbf{AWS Lambda:} 
+        \begin{itemize}
+            \item 1,000,000 GB-seconds: \$16.67 per month
+            \item 100,000 requests: \$0.02 per month
+        \end{itemize}
+    \item \textbf{S3:} 500GB storage + requests: \$12.50 per month
+    \item \textbf{DynamoDB:} 500GB storage + requests: \$125.13 per month
+    \item \textbf{SNS:} 100,000 requests: \$0.05 per month
+    \item \textbf{Secrets Manager:} 10 secrets + 100,000 API calls: \$4.50 per month
+    \item \textbf{Pinecone:} Same as our proposed architecture = \$164.68 per month
+\end{itemize}
+
+Total estimated monthly cost: \$323.55
+
+\subsubsection{Long-term (18+ months, 1,000,000 documents/month)}
+
+\begin{itemize}
+    \item \textbf{AWS Lambda:} 
+        \begin{itemize}
+            \item 10,000,000 GB-seconds: \$150.00 per month
+            \item 1,000,000 requests: \$0.20 per month
+        \end{itemize}
+    \item \textbf{S3:} 5TB storage + requests: \$116.25 per month
+    \item \textbf{DynamoDB:} 5TB storage + requests: \$1,251.25 per month
+    \item \textbf{SNS:} 1,000,000 requests: \$0.50 per month
+    \item \textbf{Secrets Manager:} 20 secrets + 1,000,000 API calls: \$13.00 per month
+    \item \textbf{Pinecone:} Same as our proposed architecture = \$1,646.80 per month
+\end{itemize}
+
+Total estimated monthly cost: \$3,178.00
+
+\subsection{Azure Equivalent Architecture}
+
+\subsubsection{Short-term (0-6 months, 10,000 documents/month)}
+
+\begin{itemize}
+    \item \textbf{Azure Functions:} 
+        \begin{itemize}
+            \item 100,000 GB-seconds: \$1.60 per month
+            \item 10,000 executions: \$0.002 per month
+        \end{itemize}
+    \item \textbf{Blob Storage:} 50GB storage + requests: \$1.20 per month
+    \item \textbf{Cosmos DB:} 
+        \begin{itemize}
+            \item 50GB storage: 50 * \$0.25 per GB = \$12.50 per month
+            \item 400 RU/s * 24 * 30 * \$0.00008 per RU/s per hour = \$23.04 per month
+        \end{itemize}
+    \item \textbf{Event Grid:} 10,000 operations * \$0.60 per million = \$0.006 per month
+    \item \textbf{Key Vault:} 
+        \begin{itemize}
+            \item 5 secrets * \$0.03 per 10,000 transactions * 100 = \$0.015 per month
+            \item 10,000 operations * \$0.03 per 10,000 = \$0.03 per month
+        \end{itemize}
+    \item \textbf{Pinecone:} Same as our proposed architecture = \$16.47 per month
+\end{itemize}
+
+Total estimated monthly cost: \$54.87
+
+\subsubsection{Medium-term (6-18 months, 100,000 documents/month)}
+
+\begin{itemize}
+    \item \textbf{Azure Functions:} 1,000,000 GB-seconds + 100,000 executions: \$16.02 per month
+    \item \textbf{Blob Storage:} 500GB storage + requests: \$10.20 per month
+    \item \textbf{Cosmos DB:} 500GB storage + 1000 RU/s: \$182.60 per month
+    \item \textbf{Event Grid:} 100,000 operations: \$0.06 per month
+    \item \textbf{Key Vault:} 10 secrets + 100,000 operations: \$0.33 per month
+    \item \textbf{Pinecone:} Same as our proposed architecture = \$164.68 per month
+\end{itemize}
+
+Total estimated monthly cost: \$373.89
+
+\subsubsection{Long-term (18+ months, 1,000,000 documents/month)}
+
+\begin{itemize}
+    \item \textbf{Azure Functions:} 10,000,000 GB-seconds + 1,000,000 executions: \$160.20 per month
+    \item \textbf{Blob Storage:} 5TB storage + requests: \$97.20 per month
+    \item \textbf{Cosmos DB:} 5TB storage + 2000 RU/s: \$1,490.20 per month
+    \item \textbf{Event Grid:} 1,000,000 operations: \$0.60 per month
+    \item \textbf{Key Vault:} 20 secrets + 1,000,000 operations: \$3.60 per month
+    \item \textbf{Pinecone:} Same as our proposed architecture = \$1,646.80 per month
+\end{itemize}
+
+Total estimated monthly cost: \$3,398.60
+
+\section{Conclusion}
+
+Our comprehensive cost analysis across various architectures and cloud providers reveals that our proposed Google Cloud-based serverless architecture offers a compelling balance of scalability, performance, and cost-effectiveness for document processing workloads. Let's summarize the key findings:
+
+\begin{table}[h]
+\centering
+\caption{Cost Comparison Summary (Monthly Costs in USD)}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Scenario} & \textbf{Our Solution (GCP)} & \textbf{AWS} & \textbf{Azure} \\
+\hline
+Short-term (10K docs/month) & \$28.27 & \$33.93 & \$54.87 \\
+Medium-term (100K docs/month) & \$280.15 & \$323.55 & \$373.89 \\
+Long-term (1M docs/month) & \$2,796.70 & \$3,178.00 & \$3,398.60 \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Key observations:}
+
+\begin{enumerate}
+    \item \textbf{Cost-effectiveness at scale:} Our solution demonstrates increasing cost advantages as the workload scales up, particularly in the long-term scenario.
+
+    \item \textbf{Serverless benefits:} The use of Cloud Run allows for fine-grained scaling and cost optimization, especially during periods of low usage.
+    
+    \item \textbf{Balanced performance:} Our architecture provides a good balance between performance and cost, leveraging managed services like Firestore and Cloud Storage.
+    
+    \item \textbf{Comparative advantage:} While AWS and Azure offer similar capabilities, our GCP-based solution proves more cost-effective across all scenarios, with the gap widening at larger scales.
+    
+    \item \textbf{Alternative GCP architectures:} Traditional VM-based and containerized (GKE) alternatives, while offering more control, lack the cost efficiency and automatic scaling of our serverless approach.
+    
+    \item \textbf{Vertex AI consideration:} While Vertex AI offers advanced ML capabilities, its high prediction costs (\$5,860.36/month in the long-term scenario) make it unsuitable for our specific document processing use case.
+\end{enumerate}
+
+
+In conclusion, our proposed serverless architecture on Google Cloud Platform emerges as the most cost-effective and scalable solution for the document processing workflow. It offers significant advantages in terms of automatic scaling, resource efficiency, and cost optimization, particularly beneficial for growing businesses or those with fluctuating workloads.
+
+The cost advantage over AWS and Azure alternatives, especially at scale, positions our solution as a compelling choice for optimizing cloud spending without compromising on performance or scalability. The serverless nature of our architecture also minimizes operational overhead, allowing teams to focus more on application development and less on infrastructure management.
+
+While alternatives like traditional VM-based architectures, containerized solutions, or advanced ML platforms like Vertex AI have their merits for specific use cases, they prove to be either less cost-effective or overly complex for our document processing requirements.
+
+It's important to note that these calculations are based on list prices and don't account for potential discounts, reserved instances, or committed use contracts. Actual costs may vary based on specific usage patterns, data transfer costs, and other factors not considered in this high-level analysis.
+
+\chapter{Frontend User Interface}
+
+The frontend of our document understanding system is implemented using Next.js, a popular React-based framework known for its performance and developer-friendly features. Figure \ref{fig:frontend-screenshot} presents the user interface of our system.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{frontend-1.png}
+    \caption{Frontend interface of the document search system}
+    \label{fig:frontend-screenshot}
+\end{figure}
+
+\section{Key Components}
+
+The frontend consists of the following key components:
+
+\begin{itemize}
+    \item \textbf{Search Bar}: A prominent input field allows users to enter their document search queries.
+    
+    \item \textbf{Search Button}: Adjacent to the search bar, a blue "Search" button triggers the query process when clicked.
+    
+    \item \textbf{Results Display}: Below the search interface, a "Top 5 Results" section presents the most relevant findings from the document corpus. Each result includes a snippet of text and a relevance score, providing users with a quick overview of the search outcomes.
+\end{itemize}
+
+\section{User Interaction Flow}
+
+The user interaction flow is designed to be intuitive and efficient:
+
+\begin{enumerate}
+    \item Users enter their search query into the search bar.
+    \item Upon clicking the "Search" button or pressing Enter, the frontend sends the query to the backend for processing.
+    \item The system retrieves and displays the top 5 most relevant results, sorted by relevance score.
+    \item Users can quickly scan the results to find the most pertinent information for their query.
+\end{enumerate}
+
+This streamlined interface allows for rapid information retrieval, catering to users who need to quickly find specific information within large document collections.
 
 
 \end{document}
