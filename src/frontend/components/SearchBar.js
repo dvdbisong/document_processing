@@ -63,19 +63,19 @@ const SearchBar = ({ onSearch }) => {
     };
 
     return (
-        <div className="w-full max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
-            <form onSubmit={handleSearch} className="flex items-center mb-4">
+        <div className="w-full max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8">
+            <form onSubmit={handleSearch} className="flex items-center mb-6">
                 <input
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    className="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-grow px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
                     placeholder="Search..."
                     disabled={isLoading}
                 />
                 <button
                     type="submit"
-                    className={`px-6 py-2 bg-blue-500 text-white rounded-r-lg transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+                    className={`px-8 py-3 bg-blue-500 text-white rounded-r-lg transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'} text-lg`}
                     disabled={isLoading}
                 >
                     {isLoading ? 'Searching...' : <FaSearch />}
@@ -84,9 +84,9 @@ const SearchBar = ({ onSearch }) => {
             {error && (
                 <p className="mt-2 text-red-500 text-center">{error}</p>
             )}
-            <div className="mt-4">
-                <label htmlFor="file-upload" className="flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg cursor-pointer hover:bg-green-600 transition-colors">
-                    <FaUpload className="mr-2" />
+            <div className="mt-6">
+                <label htmlFor="file-upload" className="flex items-center justify-center px-6 py-3 bg-green-500 text-white rounded-lg cursor-pointer hover:bg-green-600 transition-colors text-lg">
+                    <FaUpload className="mr-3" />
                     Upload Files
                 </label>
                 <input
@@ -97,7 +97,7 @@ const SearchBar = ({ onSearch }) => {
                     className="hidden"
                 />
                 {uploadStatus && (
-                    <p className="mt-2 text-center text-sm font-medium text-gray-600">{uploadStatus}</p>
+                    <p className="mt-3 text-center text-sm font-medium text-gray-600">{uploadStatus}</p>
                 )}
             </div>
         </div>
