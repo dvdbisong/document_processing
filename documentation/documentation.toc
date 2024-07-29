@@ -51,5 +51,5 @@
 \contentsline {subsubsection}{Long-term (18+ months, 1,000,000 documents/month)}{16}{section*.11}%
 \contentsline {section}{\numberline {3.4}Conclusion}{16}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Frontend User Interface}{18}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Key Components}{18}{section.4.1}%
+\contentsline {section}{\numberline {4.1}Key Components}{19}{section.4.1}%
 \contentsline {section}{\numberline {4.2}User Interaction Flow}{19}{section.4.2}%
