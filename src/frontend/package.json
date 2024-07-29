@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@google-cloud/secret-manager": "^5.6.0",
+    "@google-cloud/storage": "^7.12.0",
     "@tuesdaycrowd/sentence-transformers": "^1.0.1",
     "@xenova/transformers": "^2.17.2",
+    "formidable": "^3.5.1",
     "next": "14.2.5",
     "pinecone-client": "^2.0.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-icons": "^5.2.1"
   },
   "devDependencies": {
     "@types/node": "^20",
